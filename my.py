@@ -1,4 +1,5 @@
 import requests
+import requests
 import json
 
 def imagine_picture(prompt):
@@ -35,12 +36,13 @@ def get_picture_url(img_id):
         return None
 
 def main():
-    prompt = "一个企鹅，骑着摩托"
+    prompt = "一个企鹅，骑着摩托，抱着狗"
     img_id = imagine_picture(prompt)
     if img_id:
         url = get_picture_url(img_id)
         if url:
-            print("Image URL: ", url)
+            with open('image_url.txt', 'w') as file:
+                file.write(url)
         else:
             print("Failed to get image URL.")
     else:
