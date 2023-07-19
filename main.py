@@ -1,5 +1,4 @@
 import requests
-import requests
 import json
 
 def imagine_picture(prompt):
@@ -30,6 +29,8 @@ def get_picture_url(img_id):
         "imgId": img_id
     }
     response = requests.post(url, headers=headers, data=json.dumps(data))
+    print(f"Status code: {response.status_code}")
+    print(f"Response content: {response.content}")  # This will print the entire response
     if response.status_code == 200:
         return response.json()["data"]["url"]
     else:
