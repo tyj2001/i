@@ -35,7 +35,7 @@ def get_picture_url(img_id):
         return None
 
 def main():
-    prompt = "一个企鹅，骑着摩托，抱着狗"
+    prompt = "一个企鹅，骑着摩托"
     img_id = imagine_picture(prompt)
     if img_id:
         url = get_picture_url(img_id)
