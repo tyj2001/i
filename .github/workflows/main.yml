@@ -1,40 +1,36 @@
-name: Create Image and Save Link
+name: My Workflow
 
 on:
   push:
-    branches:
-      - main 
+    branches: [ main ]
 
 jobs:
- name: Create Image and Save Link
-
-on:
-  push:
-    branches:
-      - main 
-
-jobs:
-  run-python-script:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Check out source code
-        uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
-      - name: Set up Python environment
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
 
-      - name: Install dependencies
-        run: pip install requests
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests
 
-      - name: Run Python script
-        run: python main.py
+    - name: Run Python script
+      run: python main.py
 
-      - name: Commit and push if changes
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add -A
-          git diff --quiet && git diff --staged --quiet || git commit -m "Automated update"
-          git push https://${{secrets.GITHUB_TOKEN}}@github.com/{tyj2001}/{i}.git
+    - name: Commit files
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        git commit -m "Add changes" -a || echo "No changes to commit"
+        git push https://${{secrets.GITHUB_TOKEN}}@github.com/tyj2001/1.git 
+
+
+
