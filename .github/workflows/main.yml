@@ -30,7 +30,8 @@ jobs:
         git config --local user.name "GitHub Action"
         git add .
         git commit -m "Add changes" -a || echo "No changes to commit"
-        git push https://${{secrets.PAT}}@github.com/tyj2001/i.git 
+        git push https://x-access-token:${{ secrets.PAT }}@github.com/tyj2001/i.git
+
 
 
 
