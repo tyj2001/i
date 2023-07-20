@@ -1,55 +1,39 @@
-import requests
-import json
+name: My GitHub Action
 
-def imagine_picture(prompt):
-    try:
-        url = "http://midjourney-api.ai-des.com/func2api/Imagine"
-        headers = {
-            "Content-Type": "application/json",
-            "UUID": "afd22831-6e9e-c4e4-2477-825a3328a178"
-        }
-        data = {
-            "type": "P",
-            "prompt": prompt,
-            "imgId": "",
-            "num": 0
-        }
-        response = requests.post(url, headers=headers, data=json.dumps(data))
-        response.raise_for_status()
-        return response.json()["data"]["imgId"]
-    except Exception as e:
-        print("Failed to generate image. Error:", e)
-        return None
+on:
+  push:
+    branches:
+      - main
 
-def get_picture_url(img_id):
-    try:
-        url = "http://midjourney-api.ai-des.com/func2api/GetPicByImgID"
-        headers = {
-            "Content-Type": "application/json",
-            "UUID": "afd22831-6e9e-c4e4-2477-825a3328a178"
-        }
-        data = {
-            "imgId": img_id
-        }
-        response = requests.post(url, headers=headers, data=json.dumps(data))
-        response.raise_for_status()
-        return response.json()["data"]["url"]
-    except Exception as e:
-        print(f"Failed to get image URL. Error:", e)
-        return None
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-def main():
-    prompt = "一个企鹅，骑着摩托，抱着狗"
-    img_id = imagine_picture(prompt)
-    if img_id:
-        url = get_picture_url(img_id)
-        if url:
-            with open('image_url.txt', 'w') as file:
-                file.write(url)
-        else:
-            print("Failed to get image URL.")
-    else:
-        print("Failed to generate image.")
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-if __name__ == "__main__":
-    main()
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run Python script
+      run: python main.py
+
+    - name: Check file existence
+      run: |
+        [ -f image_url.txt ] && echo "File exists" || echo "File does not exist"
+
+    - name: Commit and push if changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add image_url.txt
+        git commit -m "Add changes" || echo "No changes to commit"
+        git push
